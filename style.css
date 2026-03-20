@@ -263,3 +263,65 @@ p {
 @media (max-width: 420px) {
     .form-container { margin-top: -36px; }
 }
+
+/* ----------------------
+   Pending invitation styles
+   ---------------------- */
+.content {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content h1 {
+    color: var(--secondary);
+    margin: 18px 0;
+    font-size: 1.4rem;
+}
+
+.invitation-card {
+    width: 100%;
+    max-width: 720px;
+    background: var(--neutral);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(28,46,32,0.08);
+    box-sizing: border-box;
+    color: var(--dark);
+}
+
+.invitation-card p { margin: 0 0 12px 0; font-size: 1rem; }
+
+.invitation-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.invitation-actions .btn-accept,
+.invitation-actions .btn-decline {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.invitation-actions .btn-accept {
+    background: #2e8b57; /* greenish */
+    color: white;
+}
+
+.invitation-actions .btn-decline {
+    background: #c0392b; /* reddish */
+    color: white;
+}
+
+.muted { color: #666; }
+
+@media (min-width: 800px) {
+    .invitation-card { padding: 24px; }
+}

@@ -25,21 +25,26 @@ $invitation = $query->fetch(); // Ici on crée la variable $invitation
 <head>
     <meta charset="UTF-8">
     <title>Mes Invitations</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Vos invitations en attente</h1>
+    <img id="logo" src="Images/Logo2.png" alt="Logo de Work4Green Sombre">
 
-    <?php if ($invitation): ?>
-        <div style="border: 2px solid green; padding: 20px; border-radius: 8px;">
-            <p>L'entreprise <strong><?php echo htmlspecialchars($invitation['companyname'] ?? 'Inconnue'); ?></strong> souhaite vous recruter !</p>
-            
-            <form method="POST" action="response_invitation.php">
-                <button type="submit" name="choix" value="accepter" style="background: green; color: white; padding: 10px;">Accepter</button>
-                <button type="submit" name="choix" value="refuser" style="background: red; color: white; padding: 10px;">Refuser</button>
-            </form>
-        </div>
-    <?php else: ?>
-        <p>Vous n'avez aucune invitation pour le moment (Statut actuel en BDD : 0).</p>
-    <?php endif; ?>
+    <main class="content">
+        <h1>Vos invitations en attente</h1>
+
+        <?php if ($invitation): ?>
+            <section class="invitation-card">
+                <p>L'entreprise <strong><?php echo htmlspecialchars($invitation['companyname'] ?? 'Inconnue'); ?></strong> souhaite vous recruter !</p>
+
+                <form method="POST" action="response_invitation.php" class="invitation-actions">
+                    <button class="btn-accept" type="submit" name="choix" value="accepter">Accepter</button>
+                    <button class="btn-decline" type="submit" name="choix" value="refuser">Refuser</button>
+                </form>
+            </section>
+        <?php else: ?>
+            <p class="muted">Vous n'avez aucune invitation pour le moment.</p>
+        <?php endif; ?>
+    </main>
 </body>
 </html>

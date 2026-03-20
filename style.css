@@ -10,6 +10,12 @@
     --input: #B7AE98;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--main);
+}
+
 .logo {
 
 }
@@ -25,8 +31,10 @@
 
 .quest-card-secondary {
     background-color: var(--secondary);
+    color: var(--main);
 }
 
 .quest-card-third {
     background-color: var(--third); 
+    color: var(--dark);
 }

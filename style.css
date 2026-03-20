@@ -9,3 +9,24 @@
 
     --input: #B7AE98;
 }
+
+.logo {
+
+}
+
+.avatar {
+
+}
+
+.input {
+    background-color: var(--input);
+    color: var(--neutral);
+}
+
+.quest-card-secondary {
+    background-color: var(--secondary);
+}
+
+.quest-card-third {
+    background-color: var(--third); 
+}

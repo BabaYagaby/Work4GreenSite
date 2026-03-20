@@ -1,58 +1,148 @@
+@font-face {
+    font-family: "Alte Haas Grotesk";
+    src: url("fonts/AlteHaasGroteskRegular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-family: "Alte Haas Grotesk Bold";
+    src: url("fonts/AlteHaasGroteskBold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* ----------------------
+   Variables
+   ---------------------- */
 :root {
-    --main: #FFEDD5;
-    --secondary: #334C36;
+    --main: #FFEDD5;     /* couleur principale (clair) */
+    --secondary: #334C36;/* couleur secondaire (foncé) */
     --third: #739272;
 
-    --dark: #1C2E20;
+    --dark: #1C2E20;     /* fond sombre pour le footer/boutons */
     --light: #E0EBCD;
     --neutral: #FFFFFF;
 
     --input: #B7AE98;
 }
 
+/* ----------------------
+   Base / Reset
+   ---------------------- */
 html, body {
+    height: 100%;
+}
+
+body{
     margin: 0;
-    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     background-color: var(--main);
+    font-family: "Alte Haas Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    overflow-x: hidden; /* évite scroll horizontal */
+    -webkit-font-smoothing: antialiased;
 }
 
-.logo {
-
-}
-
-.avatar {
-
-}
-
-.input {
-    background-color: var(--input);
-    color: var(--neutral);
-}
-
-.quest-card-secondary {
-    background-color: var(--secondary);
+/* Paragraph default (can be overridden inside components) */
+p {
     color: var(--main);
 }
 
-.quest-card-third {
-    background-color: var(--third); 
-    color: var(--dark);
+/* ----------------------
+   Hero / Background images
+   ---------------------- */
+#fond {
+    height: 67vh;
+    object-fit: cover;
+    display: block;
+    position: absolute; /* en dessous du contenu */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
 }
 
-.navbar {
-    display: flex;
-    justify-content: space-around; 
-    align-items: center;
+#logo {
+    width: 300px;
+    margin: 70px auto;
+    display: block;
+    position: relative;
+    z-index: 1000;
+}
 
-    background-color: var(--neutral);
-    height: 100px;
+/* ----------------------
+   Footer / Boutons area
+   ---------------------- */
+.boutons {
+    margin-top: auto;
     width: 100%;
-
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    box-sizing: border-box;
+    border-radius: 25px 25px 0 0;
+    background-color: var(--dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 30px 0;
+    position: relative;
+    z-index: 2; /* au-dessus du fond */
 }
 
-.nav-icon {
-    
+/* Paragraphe dans .boutons (centré et responsive) */
+.boutons p {
+    margin: 0;
+    padding: 15px 20px;
+    width: 100%;
+    max-width: 720px;
+    box-sizing: border-box;
+    text-align: center;
+    color: var(--light);
+    font-size: large;
+    font-weight: 700;
+}
+
+/* Boutons - style de base pour les <a> à l'intérieur de .boutons */
+.boutons a {
+    display: inline-block;
+    padding: 15px 25px;
+    min-width: 270px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    box-sizing: border-box;
+    font-weight: 700;
+}
+
+.boutons a:hover {
+    transform: translateY(-3px) scale(1.02);
+    filter: brightness(1.05);
+}
+
+/* Specific button variants requested by the user */
+/* Registration: background = main, text = secondary */
+#registration {
+    background-color: var(--main) !important;
+    color: var(--secondary) !important;
+}
+
+/* Connection: background = secondary, text inherits base (we make explicit) */
+#connection {
+    background-color: var(--secondary) !important;
+    color: var(--main) !important;
+}
+
+/* Admin inscription: render as a simple clickable link (not a button) */
+#admininscription {
+    background: transparent !important;
+    padding: 6px 0 !important; /* petit espace pour cliquer */
+    min-width: auto !important;
+    border-radius: 0 !important;
+    color: var(--light) !important; /* visible sur fond sombre */
+    text-decoration: underline;
+}
+
+/* Small screens adjustments (mobile-first) */
+@media (min-width: 600px) {
+    .boutons a { padding: 16px 34px; }
+    .boutons p { padding: 18px 30px; }
 }

@@ -1,5 +1,11 @@
-:root{
+:root {
+    --main: #FFEDD5;
+    --secondary: #334C36;
+    --third: #739272;
 
-    
+    --dark: #1C2E20;
+    --light: #E0EBCD;
+    --neutral: #FFFFFF;
 
+    --input: #B7AE98;
 }

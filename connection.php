@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - Work4Green</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -46,18 +47,24 @@
     }
     ?>
 
-    <form method="POST" action="">
-        <label for="lastname">Nom</label>
-        <input type="text" name="lastname" id="lastname" placeholder="Nom" required>
-        <br>
-        <label for="firstname">Prénom</label>
-        <input type="text" name="firstname" id="firstname" placeholder="Prénom" required>
-        <br>
-        <label for="password">Mot de passe</label>
-        <input type="password" name="password" id="password" placeholder="Mot de passe" required>
-        <br>
-        <input type="submit" value="Se connecter" name="envoyer">
-    </form>
+    <img id="logo" src="Images/Logo2.png" alt="Logo de Work4Green Sombre">
+
+    <main class="form-container">
+        <form class="card" method="POST" action="">
+            <h1>Se connecter</h1>
+
+            <label for="lastname">Nom</label>
+            <input type="text" name="lastname" id="lastname" placeholder="Nom" required>
+
+            <label for="firstname">Prénom</label>
+            <input type="text" name="firstname" id="firstname" placeholder="Prénom" required>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+
+            <input class="btn-primary" type="submit" value="Se connecter" name="envoyer">
+        </form>
+    </main>
 
 </body>
 </html>

@@ -20,7 +20,7 @@
     
     <div class="boutons">
 
-        <p>Plus de deux entreprises font une différence grâce à notre application.</p>
+        <p>Plus de cent mille entreprises font une différence grâce à notre application.</p>
 
         <a id="registration" href="registration.php">S'inscrire</a>
 

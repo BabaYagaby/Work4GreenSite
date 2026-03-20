@@ -146,3 +146,120 @@ p {
     .boutons a { padding: 16px 34px; }
     .boutons p { padding: 18px 30px; }
 }
+
+/* ----------------------
+   Registration form styles (same visual language as home)
+   ---------------------- */
+.form-container {
+    /* Simple lift using top so it reliably moves regardless of surrounding layout.
+       Change `top` value (negative) to move the form higher/lower. */
+    position: relative;
+    top: -70px; /* remonte le conteneur; mettez -160px ou -200px si vous voulez plus */
+    z-index: 5; /* au-dessus des autres éléments si nécessaire */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-container .card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--neutral);
+    padding: 28px;
+    border-radius: 16px;
+    box-sizing: border-box;
+    color: var(--dark);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background-color: transparent;
+}
+
+.form-container h1 {
+    margin: 0 0 6px 0;
+    font-size: 1.4rem;
+    color: var(--secondary);
+    text-align: center;
+}
+
+.form-container label {
+    font-size: 0.95rem;
+    color: var(--dark);
+    margin-top: 6px;
+    font-weight: 600;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background-color: var(--input);
+    box-sizing: border-box;
+    font-size: 1rem;
+    border: none;
+}
+
+.form-container input[type="text"]::placeholder,
+.form-container input[type="email"]::placeholder,
+.form-container input[type="password"]::placeholder {
+    color: var(--neutral);
+}
+
+/* Simple checkbox row: horizontally align box and label text */
+.form-container .checkbox-row {
+    display: flex;
+    align-items: center; /* aligne la boîte et le texte verticalement */
+    gap: 10px; /* espace entre la case et le texte */
+    margin-top: 8px;
+    font-size: 0.95rem;
+    color: var(--dark);
+}
+
+.form-container .checkbox-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0; /* s'assure que la case n'a pas de marge par défaut */
+    cursor: pointer;
+    accent-color: var(--secondary); /* couleur moderne pour la coche */
+}
+
+.form-container .checkbox-row label {
+    cursor: pointer; /* permettre de cliquer sur le texte pour cocher */
+}
+
+/* Make links inside checkbox labels look like normal text (but still clickable) */
+.form-container .checkbox-row label a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.form-container .btn-primary {
+    margin-top: 12px;
+    width: 70%;
+    padding: 12px 18px;
+    border-radius: 25px;
+    border: none;
+    background: var(--secondary);
+    color: var(--main);
+    font-weight: 1000;
+    cursor: pointer;
+    margin: 15px auto;
+}
+
+.form-container .btn-primary:hover { filter: brightness(1.05); transform: translateY(-2px); }
+
+@media (min-width: 800px) {
+    .form-container { padding-top: 60px; }
+    .form-container .card { padding: 36px; }
+}
+
+/* Small devices: reduce the negative margin so the card doesn't overlap the top bar */
+@media (max-width: 420px) {
+    .form-container { margin-top: -36px; }
+}

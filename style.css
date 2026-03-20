@@ -38,3 +38,21 @@ html, body {
     background-color: var(--third); 
     color: var(--dark);
 }
+
+.navbar {
+    display: flex;
+    justify-content: space-around; 
+    align-items: center;
+
+    background-color: var(--neutral);
+    height: 100px;
+    width: 100%;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+.nav-icon {
+    
+}

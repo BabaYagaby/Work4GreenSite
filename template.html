@@ -4,28 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="work4green.css">
 </head>
 <body>
-    <div class="logo"></div>
-    <div class="avatar"></div>
-    <input class="input" type="text">
 
-    <div class="quest-card-secondary"></div>
-    <div class="quest-card-third">
+    <header class="header">
+        <div class="logo box"></div>
+        <div class="avatar box"></div>
+    </header>
 
-    </div>
-    <button class="btn-secondary"></button>
-    <button class="btn-third"></button>
+    <main class="container">
 
-    <div class="gallery">
-        <div class="clickable"></div>
-        <div class="clickable"></div>
-        <div class="clickable"></div>
-        <div class="clickable"></div>
-    </div>
+        <input class="input box" type="text" placeholder="Rechercher...">
 
-    <nav class="navbar"></nav>
+        <section class="quests">
+            <div class="quest secondary"></div>
+            <div class="quest third"></div>
+        </section>
+
+        <section class="actions">
+            <button class="btn secondary">Action</button>
+            <button class="btn third">Action</button>
+        </section>
+
+        <section class="gallery">
+            <div class="clickable box"></div>
+            <div class="clickable box"></div>
+            <div class="clickable box"></div>
+            <div class="clickable box"></div>
+            <div class="clickable box"></div>
+            <div class="clickable box"></div>
+        </section>
+
+    </main>
+
+    <nav class="navbar">
+        <a class="nav-icon" href="">Profil</a>
+        <a class="nav-icon" href="">Quests</a>
+        <a class="nav-icon" href="">Arbre</a>
+        <a class="nav-icon" href="">Achievements</a>
+    </nav>
 
 </body>
 </html>

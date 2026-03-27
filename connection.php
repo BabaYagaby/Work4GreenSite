@@ -29,16 +29,26 @@
 
             if ($user && password_verify($enteredpassword, $user['password'])) {
 
+                // 1. On remplit la session avec les données de la BDD
                 $_SESSION['user_id'] = $user['id'];
-                // AJOUTE CETTE LIGNE (vérifie bien le nom de la colonne dans ta table users)
-                $_SESSION['company_id'] = $user['company_id']; 
+                $_SESSION['company_id'] = $user['company_id'];
                 $_SESSION['firstname'] = $user['firstname'];
                 $_SESSION['verified'] = $user['verified'];
 
+                // 2. On détermine la page de destination
+                // Si l'utilisateur a une entreprise (id différent de 0)
+                if ($user['company_id'] != 0) {
+                    $page_destination = "hub.php";
+                } else {
+                    $page_destination = "pendinginvitation.php";
+                }
+
+                // 3. Une seule alerte et une seule redirection
                 echo '<script>
-                    alert("Connexion réussie ! Bienvenue ' . htmlspecialchars($firstname) . '");
-                    window.location.href="pendinginvitation.php";
+                    alert("Connexion réussie ! Bienvenue ' . htmlspecialchars($user['firstname']) . '");
+                    window.location.href="' . $page_destination . '";
                 </script>';
+                exit();
 
             } else {
                 echo '<script>alert("Identifiants incorrects.");</script>';

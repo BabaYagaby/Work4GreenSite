@@ -8,10 +8,8 @@
 </head>
 <body>
 
-    <?php
-
+<?php
     include('config.php');
-
 
     if(isset($_POST['envoyer'])){
         $lastname = $_POST['lastname'];
@@ -19,32 +17,40 @@
         $email = $_POST['email'];
         $password = $_POST['password'];
         $confirmpassword = $_POST['confirmpassword'];
-        $verified = $_POST['verification'];
 
         if ($password === $confirmpassword) {
+            
+            // --- ÉTAPE DE VÉRIFICATION DE L'EMAIL ---
+            $checkEmail = $bdd->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
+            $checkEmail->execute(['email' => $email]);
+            $emailExists = $checkEmail->fetchColumn();
 
-            $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            
-            // On prépare la requête avec 4 paramètres : :lastname, :firstname, :email, :pass
-            $requete = $bdd->prepare("INSERT INTO users (lastname, firstname, email, password, verified) VALUES (:lastname, :firstname, :email, :password, :verified)");
-            
-            // L'array DOIT contenir exactement les mêmes clés que les ":" ci-dessus
-            $requete->execute(array(
-                "lastname"  => $lastname,
-                "firstname" => $firstname,
-                "email"     => $email,
-                "password"  => $password_hash, // 'pass' ici doit correspondre à ':pass' en haut
-                "verified"  => $verified = 0
-            ));
+            if ($emailExists > 0) {
+                // Si l'email est déjà pris, on s'arrête ici
+                echo '<script>alert("Cet email est déjà utilisé par un autre compte."); window.location.href="registration.php";</script>';
+            } else {
+                // Si l'email est libre, on procède à l'inscription
+                $password_hash = password_hash($password, PASSWORD_DEFAULT);
+                
+                $requete = $bdd->prepare("INSERT INTO users (lastname, firstname, email, password, verified, company_id, invitation_status) VALUES (:lastname, :firstname, :email, :password, :verified, 0, 0)");
+                
+                $requete->execute(array(
+                    "lastname"  => $lastname,
+                    "firstname" => $firstname,
+                    "email"     => $email,
+                    "password"  => $password_hash,
+                    "verified"  => 0 // On force à 0 par défaut pour la sécurité
+                ));
 
-            echo '<script>alert("Inscription réussie !"); window.location.href="pendinginvitation.php";</script>';
-            
+                echo '<script>alert("Inscription réussie !"); window.location.href="connection.php";</script>';
+            }
+            // ----------------------------------------
 
         } else {
             echo '<script>alert("Les mots de passe ne correspondent pas."); window.location.href="registration.php";</script>';
         }
     }
-    ?>
+?>
 
     <img id="logo" src="Images/Logo2.png" alt="Logo de Work4Green Sombre">
 

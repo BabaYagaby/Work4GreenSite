@@ -78,5 +78,17 @@
     <form method="post" action="#">
         <input type="submit" value="nouveau" name="nouveau">
     </form>
+
+    <footer class="boutons">
+
+        <a id="profile" href="profile.php">Profile</a>
+
+        <a id="company" href="company.php">Entreprise</a>
+
+        <a id="quests" href="quests.php">Quêtes</a>
+
+        <a id="settings" href="settings.php">Paramètres</a>
+
+    </footer>
 </body>
 </html>

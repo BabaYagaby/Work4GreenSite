@@ -38,7 +38,7 @@
                 // 2. On détermine la page de destination
                 // Si l'utilisateur a une entreprise (id différent de 0)
                 if ($user['company_id'] != 0) {
-                    $page_destination = "hub.php";
+                    $page_destination = "quests.php";
                 } else {
                     $page_destination = "pendinginvitation.php";
                 }

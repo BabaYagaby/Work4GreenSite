@@ -8,6 +8,7 @@
 <?php
 //une session pour garder les quetes choisi aléa et qu'on pûisse cumuler xp au fil de lma journée
     session_start();
+    include('config.php');
 //faire une tab avec les nom des taches et xp accordé et afficher random  taches +++(faire 2 daily et 1 weekly)
 //table sql des quetes serait p^lus simple a mon big ass avis qu'une tab
     $toutesLesQuetes = [
@@ -38,19 +39,41 @@
                 $_SESSION['xpTotal'] += $toutesLesQuetes[$i]['xp'];
                 $_SESSION['faites'][] = $_GET['tache'];
                 echo "La tâche <i>".$_GET['tache']."</i> a été validée <b> + ".$toutesLesQuetes[$i]['xp']."</b>";
+                $xp_gagne = $toutesLesQuetes[$i]['xp']; // On récupère la vraie valeur de la quête
+                $updateXP = $bdd->prepare("UPDATE users SET xp = xp + :xp WHERE id = :id");
+                $updateXP->execute([
+                    'xp' => $xp_gagne,
+                    'id' => $_SESSION['user_id']
+                ]);
+                
+                echo "Félicitations, vous avez gagné " . $xp_gagne . " XP !";
+
+                if ($updateXP->rowCount() > 0) {
+                    echo " -> Succès ! BDD mise à jour.";
+                } else {
+                    echo " -> Échec : Aucune ligne modifiée en BDD.";
+                }
+                
             }
         }
     }
-    elseif (isset($_GET['tache']) && $_GET['action'] == 'annuler' && in_array($_GET['tache'], $_SESSION['faites'])) {
-        foreach ($_SESSION['quetes'] as $i) {
-            if ($toutesLesQuetes[$i]['nom'] == $_GET['tache']) {
-                $_SESSION['xpTotal'] -= $toutesLesQuetes[$i]['xp'];
-                $position = array_search($_GET['tache'], $_SESSION['faites']);
-                array_splice($_SESSION['faites'], $position, 1);
-                echo "La tâche <i>".$_GET['tache']."</i> a été annulée. <b> - ".$toutesLesQuetes[$i]['xp']." XP</b>";
-            }
+    else if (isset($_GET['tache']) && $_GET['action'] == 'annuler' && in_array($_GET['tache'], $_SESSION['faites'])) {
+    foreach ($_SESSION['quetes'] as $i) {
+        if ($toutesLesQuetes[$i]['nom'] == $_GET['tache']) {
+            // 1. On retire de la session
+            $_SESSION['xpTotal'] -= $toutesLesQuetes[$i]['xp'];
+            // On retire la quête du tableau 'faites'
+            $_SESSION['faites'] = array_diff($_SESSION['faites'], [$_GET['tache']]);
+            
+            // 2. UPDATE BDD : - XP (On utilise le signe MOINS)
+            $xp_perdu = $toutesLesQuetes[$i]['xp'];
+            $updateXP = $bdd->prepare("UPDATE users SET xp = xp - :xp WHERE id = :id");
+            $updateXP->execute(['xp' => $xp_perdu, 'id' => $_SESSION['user_id']]);
+            
+            echo "La tâche <i>".$_GET['tache']."</i> a été annulée (-".$xp_perdu." XP)";
         }
     }
+}
 
 //+++mettre en timer pour la journée afin de redonner de quettes a 00:00
     if (isset($_POST['nouveau'])) {

@@ -7,64 +7,98 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// On récupère les infos de progression de l'utilisateur
-$req = $bdd->prepare("SELECT xp, level, firstname FROM users WHERE id = :id");
-$req->execute(['id' => $_SESSION['user_id']]);
-$user = $req->fetch();
+$user_id = $_SESSION['user_id'];
+$my_company_id = $_SESSION['company_id'];
 
-// --- LOGIQUE DE NIVEAU ---
-$xp_par_niveau = 100; 
-$xp_actuelle = $user['xp'];
+// 1. Infos du membre connecté
+$reqPerso = $bdd->prepare("SELECT xp, firstname FROM users WHERE id = :id");
+$reqPerso->execute(['id' => $user_id]);
+$user = $reqPerso->fetch();
 
-// Calcul du niveau actuel et de la progression
-$niveau_calcule = floor($xp_actuelle / $xp_par_niveau);
-$progression_dans_le_niveau = $xp_actuelle % $xp_par_niveau; // Le reste pour la barre
-$pourcentage = ($progression_dans_le_niveau / $xp_par_niveau) * 100;
+// 2. XP Totale de l'entreprise (Somme)
+$xp_entreprise = 0;
+if ($my_company_id > 0) {
+    $reqTotal = $bdd->prepare("SELECT SUM(xp) as total_xp_boite FROM users WHERE company_id = :comp_id");
+    $reqTotal->execute(['comp_id' => $my_company_id]);
+    $res = $reqTotal->fetch();
+    $xp_entreprise = $res['total_xp_boite'] ?? 0;
+
+    // 3. CLASSEMENT DES MEMBRES (Leaderboard)
+    $reqLeader = $bdd->query("SELECT companyname, xp FROM company ORDER BY xp DESC LIMIT 10");
+    $classementEntreprises = $reqLeader->fetchAll();
+
+    // On récupère aussi le nom de l'entreprise de l'utilisateur pour la mettre en valeur
+    $reqNomCo = $bdd->prepare("SELECT companyname FROM company WHERE id = :id");
+    $reqNomCo->execute(['id' => $my_company_id]);
+    $ma_boite = $reqNomCo->fetch();
+    $nom_ma_boite = $ma_boite['companyname'] ?? "";
+    }
+
+// 4. Calculs Barre de niveau Entreprise
+$xp_par_niveau = 500; 
+$niveau_calcule = floor($xp_entreprise / $xp_par_niveau);
+$progression = $xp_entreprise % $xp_par_niveau;
+$pourcentage = ($progression / $xp_par_niveau) * 100;
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Niveau de <?php echo htmlspecialchars($user['firstname']); ?></title>
-    <style>
-        .container { width: 400px; margin: 50px auto; text-align: center; font-family: sans-serif; }
-        .lvl-badge { font-size: 2em; font-weight: bold; color: #2ecc71; }
-        .progress-bg { background: #e0e0e0; border-radius: 20px; height: 25px; width: 100%; margin: 15px 0; overflow: hidden; }
-        .progress-fill { 
-            background: linear-gradient(90deg, #2ecc71, #27ae60); 
-            height: 100%; 
-            width: <?php echo $pourcentage; ?>%; 
-            transition: width 0.5s ease-in-out;
-        }
-    </style>
+    <title>Work4Green - Entreprise</title>
+
 </head>
 <body>
 
-<div class="container">
-    <h1>Progression de l'entreprise</h1>
-    <p>Chef d'entreprise : <strong><?php echo htmlspecialchars($user['firstname']); ?></strong></p>
-    
-    <div class="lvl-badge">Niveau <?php echo $niveau_calcule; ?></div>
-    
-    <div class="progress-bg">
-        <div class="progress-fill"></div>
+    <div class="card">
+        <h1>🌍 Notre Entreprise</h1>
+        <div style="text-align:center; font-size: 1.2em; font-weight: bold;">Niveau <?= $niveau_calcule ?></div>
+        
+        <div class="progress-bg">
+            <div class="progress-fill"></div>
+        </div>
+        <p style="text-align:center; margin:0;"><?= $progression ?> / <?= $xp_par_niveau ?> XP avant le prochain niveau</p>
     </div>
-    
-    <p><?php echo $progression_dans_le_niveau; ?> / <?php echo $xp_par_niveau; ?> XP</p>
-    <p><small>Total accumulé : <?php echo $xp_actuelle; ?> XP</small></p>
-</div>
+
+    <div class="card">
+        <h2>🏆 Top 10 des Entreprises Vertes</h2>
+        <table class="leaderboard">
+            <thead>
+                <tr>
+                    <th>Rang</th>
+                    <th>Entreprise</th>
+                    <th>Score Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $rank = 1; 
+                foreach($classementEntreprises as $entreprise): 
+                    // On vérifie si c'est l'entreprise de l'utilisateur pour mettre une couleur
+                    $est_mon_entreprise = ($entreprise['companyname'] == $nom_ma_boite);
+                ?>
+                    <tr class="<?= $est_mon_entreprise ? 'current-user' : '' ?>">
+                        <td class="rank">
+                            <?php 
+                            if($rank == 1) echo "🥇";
+                            elseif($rank == 2) echo "🥈";
+                            elseif($rank == 3) echo "🥉";
+                            else echo $rank;
+                            ?>
+                        </td>
+                        <td><?= htmlspecialchars($entreprise['companyname']) ?></td>
+                        <td><strong><?= $entreprise['xp'] ?> XP</strong></td>
+                    </tr>
+                <?php $rank++; endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 
     <footer class="boutons">
-
-        <a id="profile" href="profile.php">Profile</a>
-
-        <a id="company" href="company.php">Entreprise</a>
-
-        <a id="quests" href="quests.php">Quêtes</a>
-
-        <a id="settings" href="settings.php">Paramètres</a>
-
+        <a href="profile.php">Profil</a>
+        <a href="company.php">Entreprise</a>
+        <a href="quests.php">Quêtes</a>
+        <a href="settings.php">Paramètres</a>
     </footer>
 
 </body>

@@ -1,117 +1,136 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <link href="" />
-</head>
-
 <?php
-//une session pour garder les quetes choisi aléa et qu'on pûisse cumuler xp au fil de lma journée
-    session_start();
-    include('config.php');
-//faire une tab avec les nom des taches et xp accordé et afficher random  taches +++(faire 2 daily et 1 weekly)
-//table sql des quetes serait p^lus simple a mon big ass avis qu'une tab
-    $toutesLesQuetes = [
-        ["nom" => "Déplacement non polluant", "description" => "Vélo, marche ou trottinette", "xp" => 50],
-        ["nom" => "Déplacement transports en commun", "description" => "Bus, train ou tram", "xp" => 40],
-        ["nom" => "Déplacement covoiturage", "description" => "Voyager à plusieurs en voiture", "xp" => 80],
-        ["nom" => "Éteindre les appareils électriques", "description" => "Veille et lumières coupées", "xp" => 60],
-        ["nom" => "Nettoyage de la boîte mail professionnelle", "description" => "Suppression des mails inutiles", "xp" => 30],
-    ];
-   
-    if (!isset($_SESSION['quetes'])) {
-        $_SESSION['quetes'] = array_rand($toutesLesQuetes, 3);
-    }
-    if (!isset($_SESSION['xpTotal'])) {
-        $_SESSION['xpTotal'] = 0;
-    }
-    if (!isset($_SESSION['faites'])) {
-        $_SESSION['faites'] = [];
-    }
+session_start();
+include('config.php');
 
-    print_r($_SESSION['quetes']);
-    echo print_r($_SESSION['faites']);
+if (!isset($_SESSION['user_id'])) {
+    header("Location: connection.php");
+    exit();
+}
 
-//un if bien complexe pour verifier si on a valide une quete et si elle n'a pas déja eté validé on met dans la session la quete et cumule xp et le contraire quand on annule
-    if (isset($_GET['tache']) && $_GET['action'] == 'valider' && !in_array($_GET['tache'], $_SESSION['faites'])) {
-        foreach ($_SESSION['quetes'] as $i) {
-            if ($toutesLesQuetes[$i]['nom'] == $_GET['tache']) {
-                $_SESSION['xpTotal'] += $toutesLesQuetes[$i]['xp'];
-                $_SESSION['faites'][] = $_GET['tache'];
-                echo "La tâche <i>".$_GET['tache']."</i> a été validée <b> + ".$toutesLesQuetes[$i]['xp']."</b>";
-                $xp_gagne = $toutesLesQuetes[$i]['xp']; // On récupère la vraie valeur de la quête
-                $updateXP = $bdd->prepare("UPDATE users SET xp = xp + :xp WHERE id = :id");
-                $updateXP->execute([
-                    'xp' => $xp_gagne,
-                    'id' => $_SESSION['user_id']
-                ]);
-                
-                echo "Félicitations, vous avez gagné " . $xp_gagne . " XP !";
+// 1. RÉCUPÉRATION DES INFOS POUR LA BARRE (Avant les calculs)
+$reqBarre = $bdd->prepare("SELECT xp, level FROM users WHERE id = :id");
+$reqBarre->execute(['id' => $_SESSION['user_id']]);
+$userBarre = $reqBarre->fetch();
 
-                if ($updateXP->rowCount() > 0) {
-                    echo " -> Succès ! BDD mise à jour.";
-                } else {
-                    echo " -> Échec : Aucune ligne modifiée en BDD.";
-                }
-                
-            }
-        }
-    }
-    else if (isset($_GET['tache']) && $_GET['action'] == 'annuler' && in_array($_GET['tache'], $_SESSION['faites'])) {
+$xp_perso = $userBarre['xp'];
+$lvl_perso = $userBarre['level'];
+
+// Calcul pour la barre (Palier de 100)
+$xp_dans_niveau = $xp_perso % 100;
+$pourcentage_perso = ($xp_dans_niveau / 100) * 100;
+
+// 2. LOGIQUE DES QUÊTES
+$toutesLesQuetes = [
+    ["nom" => "Déplacement non polluant", "description" => "Vélo, marche ou trottinette", "xp" => 50],
+    ["nom" => "Déplacement transports en commun", "description" => "Bus, train ou tram", "xp" => 40],
+    ["nom" => "Déplacement covoiturage", "description" => "Voyager à plusieurs en voiture", "xp" => 80],
+    ["nom" => "Éteindre les appareils électriques", "description" => "Veille et lumières coupées", "xp" => 60],
+    ["nom" => "Nettoyage de la boîte mail professionnelle", "description" => "Suppression des mails inutiles", "xp" => 30],
+];
+
+if (!isset($_SESSION['quetes'])) {
+    $_SESSION['quetes'] = array_rand($toutesLesQuetes, 3);
+}
+
+// 3. ACTION VALIDER
+if (isset($_GET['tache']) && $_GET['action'] == 'valider' && !in_array($_GET['tache'], $_SESSION['faites'])) {
     foreach ($_SESSION['quetes'] as $i) {
         if ($toutesLesQuetes[$i]['nom'] == $_GET['tache']) {
-            // 1. On retire de la session
-            $_SESSION['xpTotal'] -= $toutesLesQuetes[$i]['xp'];
-            // On retire la quête du tableau 'faites'
-            $_SESSION['faites'] = array_diff($_SESSION['faites'], [$_GET['tache']]);
+            $xp_gagne = $toutesLesQuetes[$i]['xp'];
             
-            // 2. UPDATE BDD : - XP (On utilise le signe MOINS)
-            $xp_perdu = $toutesLesQuetes[$i]['xp'];
-            $updateXP = $bdd->prepare("UPDATE users SET xp = xp - :xp WHERE id = :id");
-            $updateXP->execute(['xp' => $xp_perdu, 'id' => $_SESSION['user_id']]);
-            
-            echo "La tâche <i>".$_GET['tache']."</i> a été annulée (-".$xp_perdu." XP)";
+            // Update Entreprise
+            $updateC = $bdd->prepare("UPDATE company SET xp = xp + :xp WHERE id = :company_id");
+            $updateC->execute(['xp' => $xp_gagne, 'company_id' => $_SESSION['company_id']]);
+
+            // Update User (XP + Calcul Niveau auto)
+            $new_total_xp = $xp_perso + $xp_gagne;
+            $new_lvl = floor($new_total_xp / 100);
+
+            $updateU = $bdd->prepare("UPDATE users SET xp = xp + :xp, level = :lvl WHERE id = :id");
+            $updateU->execute(['xp' => $xp_gagne, 'lvl' => $new_lvl, 'id' => $_SESSION['user_id']]);
+
+            $_SESSION['faites'][] = $_GET['tache'];
+            header("Location: quests.php"); // On recharge pour actualiser la barre
+            exit();
         }
     }
 }
 
-//+++mettre en timer pour la journée afin de redonner de quettes a 00:00
-    if (isset($_POST['nouveau'])) {
-        session_destroy();
-        header("Location: taches.php");
-    }
-?>
+// 4. ACTION ANNULER
+else if (isset($_GET['tache']) && $_GET['action'] == 'annuler' && in_array($_GET['tache'], $_SESSION['faites'])) {
+    foreach ($_SESSION['quetes'] as $i) {
+        if ($toutesLesQuetes[$i]['nom'] == $_GET['tache']) {
+            $xp_perdu = $toutesLesQuetes[$i]['xp'];
+            
+            // Recalcul niveau
+            $new_total_xp = max(0, $xp_perso - $xp_perdu);
+            $new_lvl = floor($new_total_xp / 100);
 
+            $bdd->prepare("UPDATE company SET xp = xp - :xp WHERE id = :cid")->execute(['xp' => $xp_perdu, 'cid' => $_SESSION['company_id']]);
+            $bdd->prepare("UPDATE users SET xp = xp - :xp, level = :lvl WHERE id = :id")->execute(['xp' => $xp_perdu, 'lvl' => $new_lvl, 'id' => $_SESSION['user_id']]);
+
+            $_SESSION['faites'] = array_diff($_SESSION['faites'], [$_GET['tache']]);
+            header("Location: quests.php");
+            exit();
+        }
+    }
+}
+
+if (isset($_POST['nouveau'])) {
+    unset($_SESSION['quetes']);
+    unset($_SESSION['faites']);
+    header("Location: quests.php");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Quêtes & Niveau</title>
+</head>
 <body>
-    <h2>Mon Score : <?= $_SESSION['xpTotal'] ?> XP</h2>
+
+    <div class="quest-lvl-container">
+        <div style="display: flex; justify-content: space-between; font-weight: bold;">
+            <span>Niveau <?= $lvl_perso ?></span>
+            <span><?= $xp_dans_niveau ?> / 100 XP</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill"></div>
+        </div>
+        <small>Total accumulé : <?= $xp_perso ?> XP</small>
+    </div>
+
     <fieldset>
-    <legend>Vos taches à faire svp</legend>
+        <legend><h2>Vos quêtes du jour</h2></legend>
         <?php foreach ($_SESSION['quetes'] as $i): ?>
-            <form method="get" action="#">
-                <label for="<?= $toutesLesQuetes[$i]['nom'] ?>"> <?= $toutesLesQuetes[$i]['nom'] ?> </label>
-                <p><?= $toutesLesQuetes[$i]['description']." + ". $toutesLesQuetes[$i]['xp'] ?></p>
-                <input type="hidden" name="tache" id="<?= $toutesLesQuetes[$i]['nom'] ?>" value="<?= $toutesLesQuetes[$i]['nom'] ?>"/>
-                <input type="submit" name="action" value="valider">
-                <input type="submit" name="action" value="annuler">
-            </form>
-            <br>
+            <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+                <strong><?= $toutesLesQuetes[$i]['nom'] ?></strong>
+                <p style="margin: 5px 0; color: #666;"><?= $toutesLesQuetes[$i]['description'] ?> (<b>+<?= $toutesLesQuetes[$i]['xp'] ?> XP</b>)</p>
+                
+                <form method="get" action="">
+                    <input type="hidden" name="tache" value="<?= $toutesLesQuetes[$i]['nom'] ?>"/>
+                    <?php if(!in_array($toutesLesQuetes[$i]['nom'], $_SESSION['faites'])): ?>
+                        <button type="submit" name="action" value="valider" class="btn-valider">Valider</button>
+                    <?php else: ?>
+                        <span style="color: #2ecc71; font-weight: bold;">✅ Complétée</span>
+                        <button type="submit" name="action" value="annuler" class="btn-annuler" style="margin-left: 10px;">Annuler</button>
+                    <?php endif; ?>
+                </form>
+            </div>
         <?php endforeach ?>
     </fieldset> 
 
-    <form method="post" action="#">
-        <input type="submit" value="nouveau" name="nouveau">
+    <form method="post" action="#" style="margin-top: 20px;">
+        <input type="submit" value="Renouveler les quêtes" name="nouveau">
     </form>
 
     <footer class="boutons">
-
-        <a id="profile" href="profile.php">Profile</a>
-
-        <a id="company" href="company.php">Entreprise</a>
-
-        <a id="quests" href="quests.php">Quêtes</a>
-
-        <a id="settings" href="settings.php">Paramètres</a>
-
+        <a href="profile.php">Profile</a>
+        <a href="company.php">Entreprise</a>
+        <a href="quests.php">Quêtes</a>
+        <a href="settings.php">Paramètres</a>
     </footer>
 </body>
 </html>

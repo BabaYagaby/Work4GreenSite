@@ -94,46 +94,69 @@ $reqBarre->execute([$user_id]);
 $u = $reqBarre->fetch();
 $pourcentage = ($u['xp'] % 100);
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Quêtes Éco</title>
-    <style>
-        .progress-bar { width: 100%; background: #eee; height: 15px; border-radius: 10px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Quêtes Éco</title>
+    <link rel="stylesheet" href="work4green.css">
 </head>
 <body>
 
-    <div class="progress-bar"><div class="fill"></div></div>
-    <p>Niveau <?= $u['level'] ?> - <?= $u['xp'] % 100 ?>/100 XP</p>
+    <div class="app-container flex-col gap-lg">
+        
+        <header class="card flex-col gap-sm">
+            <div class="d-flex justify-between items-center">
+                <h1 class="text-title-lvl">Niveau <?= htmlspecialchars($u['level']) ?></h1>
+                <span class="text-subtitle"><?= htmlspecialchars($pourcentage) ?>/100 XP</span>
+            </div>
+            <div class="progress-wrapper">
+                <div class="progress-fill" style="width: <?= htmlspecialchars($pourcentage) ?>%;"></div>
+            </div>
+        </header>
 
-    <fieldset>
-    <legend>Quêtes du <?= date('d/m/Y') ?></legend>
-    <?php foreach ($quetesDuJour as $q): ?>
-        <div style="margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
-            <strong><?= htmlspecialchars($q['quest_name']) ?> (+<?= $q['quest_xp'] ?> XP)</strong>
-            <p><?= htmlspecialchars($q['quest_description']) ?></p>
+        <section class="flex-col gap-md">
+            <h2 class="text-title">Quêtes du <?= date('d/m/Y') ?></h2>
+            
+            <?php foreach ($quetesDuJour as $q): ?>
+                <article class="card flex-col gap-sm">
+                    
+                    <div class="d-flex justify-between items-center">
+                        <h3 class="text-subtitle"><?= htmlspecialchars($q['quest_name']) ?></h3>
+                        <span class="badge-xp">+<?= htmlspecialchars($q['quest_xp']) ?> XP</span>
+                    </div>
+                    
+                    <p class="text-body mb-md"><?= htmlspecialchars($q['quest_description']) ?></p>
 
-            <?php if (in_array($q['quest_id'], $faitesAujourdhui)): ?>
-                <span class="done">✅ Validée pour aujourd'hui</span>
-                <br>
-                <small>
-                    <a href="quests.php?action=annuler&quest_id=<?= $q['quest_id'] ?>" 
-                       style="color: #e74c3c; text-decoration: none;" 
-                       onclick="return confirm('Voulez-vous vraiment annuler cette action ? L\'XP sera retirée.');">
-                       Annuler la quête
-                    </a>
-                </small>
-            <?php else: ?>
-                <a href="quests.php?action=valider&quest_id=<?= $q['quest_id'] ?>">
-                   Valider la tâche
-                </a>
-            <?php endif; ?>
-        </div>
-    <?php endforeach; ?>
-</fieldset>
+                    <?php if (in_array($q['quest_id'], $faitesAujourdhui)): ?>
+                        <div class="btn btn-success">
+                            ✅ Validée
+                        </div>
+                        <a href="quests.php?action=annuler&quest_id=<?= $q['quest_id'] ?>" 
+                           class="btn btn-danger mt-md"
+                           onclick="return confirm('Voulez-vous vraiment annuler cette action ? L\'XP sera retirée.');">
+                           Annuler la quête
+                        </a>
+                    <?php else: ?>
+                        <a href="quests.php?action=valider&quest_id=<?= $q['quest_id'] ?>" class="btn btn-primary">
+                            Valider la tâche
+                        </a>
+                    <?php endif; ?>
+
+                </article>
+            <?php endforeach; ?>
+        </section>
+
+    </div>
+
+<div class="navbar">
+  <div class="navbar-inner">
+        <a class="nav-icon" href="profile.php"><img src="./Images/profile-1341-svgrepo-com.svg" alt="Profil"></a>
+        <a class="nav-icon" href="quests.php"><img src="./Images/notebook-svgrepo-com.svg" alt="Quetes"></a>
+        <a class="nav-icon" href="company.php"><img src="./Images/leaf-eco-svgrepo-com.svg" alt="W4G"></a>
+        <a class="nav-icon" href="options.php"><img src="./Images/gear-svgrepo-com.svg" alt="Options"></a>
+  </div>
+</div>
 
 </body>
 </html>

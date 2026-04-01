@@ -98,7 +98,8 @@ $pourcentage = ($u['xp'] % 100);
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Quêtes Éco</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quêtes - Work4Green</title>
     <link rel="stylesheet" href="work4green.css">
 </head>
 <body>

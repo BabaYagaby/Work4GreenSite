@@ -47,18 +47,18 @@ p {
     color: var(--main);
 }
 
+
 /* ----------------------
    Hero / Background images
    ---------------------- */
 #fond {
-    height: 67vh;
-    object-fit: cover;
-    display: block;
-    position: absolute; /* en dessous du contenu */
+    position: absolute;     /* Elle ne pousse pas les autres éléments */
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
+    left: 0;
+    width: 100%;
+    height: 80vh;           /* Elle couvre 80% de la hauteur de l'écran */
+    object-fit: cover;      /* Elle se redimensionne proprement */
+    z-index: 1;             /* Niveau le plus bas */
 }
 
 #logo {
@@ -246,7 +246,7 @@ p {
     border-radius: 25px;
     border: none;
     background: var(--secondary);
-    color: var(--main);
+    color: var(--neutral);
     font-weight: 1000;
     cursor: pointer;
     margin: 15px auto;

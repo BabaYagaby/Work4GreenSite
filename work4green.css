@@ -56,6 +56,7 @@ a {
     max-width: 600px;
     margin: 0 auto;
     padding: var(--space-md);
+    padding-top: 3vh;
     padding-bottom: 100px;
     min-height: 100vh;
 }
@@ -119,7 +120,7 @@ a {
 
 .btn:active { transform: scale(0.98); }
 
-.btn-primary { background: var(--dark); color: var(--main); }
+.btn-primary { background: var(--dark); color: var(--neutral); }
 .btn-outline { background: transparent; border: 2px solid var(--dark); color: var(--dark); }
 .btn-danger { background: var(--fourth); color: var(--black); }
 .btn-success { background: var(--third); color: var(--neutral); pointer-events: none; }
@@ -240,7 +241,7 @@ a {
     padding: 12px;
     border-radius: var(--radius-btn);
     background: var(--third);
-    color: var(--neutral);
+    color: var(--light);
     font-weight: bold;
     font-size: 0.9rem;
     text-align: center;
@@ -252,7 +253,9 @@ a {
 
 /* Scène Avatar */
 .avatar-display {
-    background: rgba(51, 76, 54, 0.704); /* var(--input) transparent */
+    background-color: var(--dark);
+    background-image: url('./Images/pattern.png');
+    background-size: cover;
     border-radius: var(--radius-box);
     padding: var(--space-lg);
     display: flex;
@@ -261,11 +264,263 @@ a {
     min-height: 250px;
     box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
 }
+
 .character {
     width: 80%;
     max-width: 100%;
+    z-index: 2;
 }
 .character img {
     width: 100%;
     object-fit: contain;
+    z-index: 2;
+}
+
+/* Correction du container global pour les pages d'application */
+.content-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* On s'assure que les images dans les grilles ne dépassent jamais */
+.inventory-item img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Style des flèches d'inventaire */
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.arrow-btn {
+    background: var(--third);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+/* Scrollbar discrète pour l'inventaire */
+.inventory-grid::-webkit-scrollbar {
+    width: 4px;
+}
+.inventory-grid::-webkit-scrollbar-thumb {
+    background: var(--third);
+    border-radius: 10px;
+}
+
+/* ========================================
+   7. STATISTIQUES (Graphiques et Blocs)
+======================================== */
+
+.stat-select {
+    background: var(--neutral);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: var(--dark);
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Conteneur du graphique */
+.chart-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 140px;
+    margin-top: 10px;
+    border-bottom: 2px solid var(--dark);
+    padding-bottom: 5px;
+}
+
+/* Une colonne du graphique (Les barres + le jour) */
+.chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 14%; /* Divisé par 7 jours */
+}
+
+/* Le conteneur des deux barres (côte à côte, alignées en bas) */
+.bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2px;
+    height: 100%;
+    width: 100%;
+}
+
+/* Les barres elles-mêmes */
+.bar {
+    width: 10px;
+    border-radius: 2px 2px 0 0;
+    transition: height 0.5s ease-out;
+}
+
+.bar.current { background: var(--dark); }
+.bar.previous { background: var(--light); opacity: 0.6; }
+
+.chart-label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--dark);
+    margin-top: 5px;
+}
+
+/* Légende en dessous du graphique */
+.chart-legend {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.legend-box {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+}
+.legend-box.current { background: var(--dark); }
+.legend-box.previous { background: var(--light); opacity: 0.6; }
+
+/* Grille pour les 3 blocs de stats (CO2, Vélo, Arbres) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 5px;
+}
+
+.stat-box {
+    border-radius: 16px;
+    padding: 15px 5px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.stat-box.box-dark { background: var(--dark); color: var(--neutral); }
+.stat-box.box-medium { background: var(--third); color: var(--dark); }
+.stat-box.box-light { background: var(--light); color: var(--dark); }
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+/* ========================================
+   8. INTERFACE SUCCÈS (Achievements)
+======================================== */
+
+.achievement-card {
+    display: flex;
+    align-items: center;
+    background: var(--neutral);
+    border-radius: 14px;
+    padding: 12px 16px;
+    gap: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    border: 1px solid transparent;
+    transition: transform 0.2s;
+}
+
+/* Style quand le succès est verrouillé */
+.achievement-card.locked {
+    background: rgba(255, 255, 255, 0.6);
+    filter: grayscale(0.8);
+    opacity: 0.8;
+}
+
+.achievement-icon {
+    font-size: 1.8rem;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--main);
+    border-radius: 10px;
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-name {
+    font-weight: bold;
+    color: var(--dark);
+    font-size: 1rem;
+}
+
+.achievement-desc {
+    font-size: 0.8rem;
+    color: var(--third);
+    line-height: 1.2;
+}
+
+.achievement-status {
+    text-align: right;
+}
+
+.status-badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge.unlocked {
+    background: var(--third);
+    color: var(--neutral);
+}
+
+.status-progress {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--input);
+}
+
+.btn-logout {
+    background: #ffeded;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+    font-weight: bold;
+    padding: 14px;
+    border-radius: 12px;
+    text-align: center;
+    display: block;
+    width: 100%;
 }

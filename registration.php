@@ -79,6 +79,12 @@
             </div>
 
             <input class="btn-primary" type="submit" value="S'inscrire" name="envoyer">
+
+        <div style="text-align: center; margin-top: 10px;">
+        <a href="index.php" style="font-size: 0.85rem; color: var(--secondary); font-weight: bold; text-decoration: underline;">
+            ← Retour
+        </a>
+        </div>
         </form>
     </main>
 

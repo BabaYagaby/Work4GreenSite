@@ -73,8 +73,16 @@
             <input type="password" name="password" id="password" placeholder="Mot de passe" required>
 
             <input class="btn-primary" type="submit" value="Se connecter" name="envoyer">
+
+        <div style="text-align: center; margin-top: 10px;">
+        <a href="index.php" style="font-size: 0.85rem; color: var(--secondary); font-weight: bold; text-decoration: underline;">
+            ← Retour
+        </a>
+        </div>
         </form>
     </main>
+
+
 
 </body>
 </html>

@@ -26,25 +26,31 @@
             $emailExists = $checkEmail->fetchColumn();
 
             if ($emailExists > 0) {
-                // Si l'email est déjà pris, on s'arrête ici
                 echo '<script>alert("Cet email est déjà utilisé par un autre compte."); window.location.href="registration.php";</script>';
             } else {
-                // Si l'email est libre, on procède à l'inscription
                 $password_hash = password_hash($password, PASSWORD_DEFAULT);
                 
-                $requete = $bdd->prepare("INSERT INTO users (lastname, firstname, email, password, verified, company_id, invitation_status) VALUES (:lastname, :firstname, :email, :password, :verified, 0, 0)");
+                // 1. Inscription de l'utilisateur
+                // On ajoute current_avatar_id = 3 directement à l'inscription pour qu'il soit équipé
+                $requete = $bdd->prepare("INSERT INTO users (lastname, firstname, email, password, verified, company_id, invitation_status, xp, level, current_avatar_id) VALUES (:lastname, :firstname, :email, :password, :verified, 0, 0, 0, 0, 3)");
                 
                 $requete->execute(array(
                     "lastname"  => $lastname,
                     "firstname" => $firstname,
                     "email"     => $email,
                     "password"  => $password_hash,
-                    "verified"  => 0 // On force à 0 par défaut pour la sécurité
+                    "verified"  => 0 
                 ));
 
-                echo '<script>alert("Inscription réussie !"); window.location.href="connection.php";</script>';
+                // 2. Récupération de l'ID du nouvel utilisateur
+                $new_user_id = $bdd->lastInsertId();
+
+                // ça donne l'avatar de base direct
+                $addInventory = $bdd->prepare("INSERT INTO user_inventory (user_id, item_id, obtained_at) VALUES (?, 3, NOW())");
+                $addInventory->execute([$new_user_id]);
+
+                echo '<script>alert("Inscription réussie !"); window.location.href="pendinginvitation.php";</script>';
             }
-            // ----------------------------------------
 
         } else {
             echo '<script>alert("Les mots de passe ne correspondent pas."); window.location.href="registration.php";</script>';

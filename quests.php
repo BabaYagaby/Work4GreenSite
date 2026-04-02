@@ -120,7 +120,7 @@ $pourcentage = ($u['xp'] % 100);
             <h2 class="text-title">Quêtes du <?= date('d/m/Y') ?></h2>
             
             <?php foreach ($quetesDuJour as $q): ?>
-                <article class="card flex-col gap-sm">
+                <article class="card-dark flex-col gap-sm">
                     
                     <div class="d-flex justify-between items-center">
                         <h3 class="text-subtitle"><?= htmlspecialchars($q['quest_name']) ?></h3>

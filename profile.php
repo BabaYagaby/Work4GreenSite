@@ -51,9 +51,9 @@ $pourcentage = ($user['xp'] % 100);
 </head>
 <body>
     
-<main class="app-container flex-col gap-lg">
+<main class="app-container flex-col gap-md">
 
-    <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--neutral); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--main); box-shadow: none;">
         <div class="avatar big">
             <img src="<?= $user['avatar_img'] ?? './images/perso.svg' ?>" alt="Avatar">
         </div>

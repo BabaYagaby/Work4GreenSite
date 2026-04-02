@@ -1,0 +1,13 @@
+Compte test user :
+  - Prénom : User
+  - Nom : Test
+  - mail : testuser@gmail.com
+  - mdp : 1234
+  - id : 13
+
+Compte test admin :
+  - Prénom : Admin
+  - Nom : Test
+  - mail : testadmin@gmail.com
+  - mdp : 1234
+  - id : 12

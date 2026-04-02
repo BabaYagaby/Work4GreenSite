@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 02 avr. 2026 à 23:38
+-- Généré le : jeu. 02 avr. 2026 à 23:58
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -41,7 +41,8 @@ CREATE TABLE `company` (
 INSERT INTO `company` (`id`, `companyname`, `xp`, `level`) VALUES
 (1, 'Eco-Tech Solutions', 2750, 6),
 (2, 'Green Horizon', 5800, 12),
-(3, 'Petit Potager SARL', 150, 1);
+(3, 'Petit Potager SARL', 150, 1),
+(4, 'TestAdminCorp', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -138,7 +139,9 @@ INSERT INTO `users` (`id`, `lastname`, `firstname`, `email`, `password`, `verifi
 (6, 'Petit', 'Chloé', 'c.petit@greenh.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 600, 7, 1, 2, 5, NULL, NULL, NULL),
 (7, 'Garnier', 'Thomas', 't.garnier@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 50, 1, 0, 0, 3, NULL, NULL, NULL),
 (8, 'Faure', 'Julie', 'j.faure@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 10, 0, 0, 0, 2, NULL, NULL, NULL),
-(9, 'Rousseau', 'Antoine', 'a.rousseau@outlook.fr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 0, 0, 0, 0, 1, NULL, NULL, NULL);
+(9, 'Rousseau', 'Antoine', 'a.rousseau@outlook.fr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 0, 0, 0, 0, 1, NULL, NULL, NULL),
+(12, 'Test', 'Admin', 'testadmin@gmail.com', '$2y$10$//wkKcOinGf.0OEoVkdOqOvYsM7n/qQB.jqDBeJNkEVKsqBGp2sMm', 1, 0, 0, 0, 4, NULL, NULL, NULL, NULL),
+(13, 'Test', 'User', 'testuser@gmail.com', '$2y$10$hF7CvvEWO28NmR19F7/SxO/VtdMnDVs1gHMNc.NQshBOFqI/uNC.G', 0, 0, 0, 0, 0, 3, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -171,7 +174,8 @@ INSERT INTO `user_inventory` (`user_id`, `item_id`, `obtained_at`) VALUES
 (8, 2, '2026-04-02 23:36:09'),
 (8, 3, '2026-04-02 23:36:09'),
 (9, 1, '2026-04-02 23:36:09'),
-(9, 3, '2026-04-02 23:36:09');
+(9, 3, '2026-04-02 23:36:09'),
+(13, 3, '2026-04-02 23:48:56');
 
 -- --------------------------------------------------------
 
@@ -235,7 +239,7 @@ ALTER TABLE `user_quests`
 -- AUTO_INCREMENT pour la table `company`
 --
 ALTER TABLE `company`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `items_catalog`
@@ -253,7 +257,7 @@ ALTER TABLE `quest`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `user_quests`

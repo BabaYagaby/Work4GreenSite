@@ -3,10 +3,10 @@ session_start();
 include('config.php'); 
 
 // --- CONNEXION BDD ---
-$host = '127.0.0.1';
-$db   = 'work4green';
-$user = 'root';
-$pass = ''; // Mets ton mot de passe si tu en as un
+$host =  $servername;
+$db   = $dbname ;
+$user =   $username ;
+$pass = $password ; 
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

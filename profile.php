@@ -9,23 +9,38 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Récupération dynamique des données de l'utilisateur ET de son entreprise
-$reqUser = $bdd->prepare("
-    SELECT u.firstname, u.lastname, u.level, u.xp, c.companyname 
+// 1. On récupère les infos du user + son entreprise + ses objets ÉQUIPÉS
+$req = $bdd->prepare("
+    SELECT u.*, c.companyname, 
+           av.image_path as avatar_img,
+           bg.image_path as badge_img
     FROM users u 
     LEFT JOIN company c ON u.company_id = c.id 
+    LEFT JOIN items_catalog av ON u.current_avatar_id = av.id
+    LEFT JOIN items_catalog bg ON u.favorite_badge_id = bg.id
     WHERE u.id = ?
 ");
-$reqUser->execute([$user_id]);
-$user = $reqUser->fetch(PDO::FETCH_ASSOC);
+$req->execute([$user_id]);
+$user = $req->fetch(PDO::FETCH_ASSOC);
 
-if (!$user) {
-    die("Utilisateur introuvable.");
-}
+if (!$user) { die("Utilisateur introuvable."); }
 
-// Calcul de l'XP pour la barre de progression
+// 2. On récupère la liste des badges POSSÉDÉS (pour la petite collection)
+$reqBadges = $bdd->prepare("
+    SELECT c.image_path 
+    FROM items_catalog c
+    JOIN user_inventory i ON c.id = i.item_id
+    WHERE i.user_id = ? AND c.type = 'badge'
+    LIMIT 3
+");
+$reqBadges->execute([$user_id]);
+$mesBadges = $reqBadges->fetchAll();
+
+// Calcul de l'XP
 $pourcentage = ($user['xp'] % 100);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -40,17 +55,20 @@ $pourcentage = ($user['xp'] % 100);
 
     <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--neutral); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
         <div class="avatar big">
-            <img src="./images/guy2 1.png" alt="Avatar">
+            <img src="<?= $user['avatar_img'] ?? './images/perso.svg' ?>" alt="Avatar">
         </div>
 
         <div class="flex-col items-center">
             <div class="text-title"><?= htmlspecialchars($user['firstname'] . ' ' . $user['lastname']) ?></div>
             <div class="text-subtitle text-third"><?= htmlspecialchars($user['companyname'] ?? 'Aucune entreprise') ?></div>
 
-            <div class="badges mt-md">
-                <img src="./Images/Badge-1.png" alt="Badge">
-                <img src="" alt="">
-                <img src="" alt="">
+            <div class="badges mt-md" style="display: flex; gap: 5px;">
+                <?php foreach($mesBadges as $b): ?>
+                    <img src="<?= $b['image_path'] ?>" alt="Badge" style="width: 25px; height: 25px;">
+                <?php endforeach; ?>
+                <?php if(empty($mesBadges)): ?>
+                    <small style="color: #aaa;">Aucun badge</small>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -61,7 +79,7 @@ $pourcentage = ($user['xp'] % 100);
             <div class="text-subtitle"><?= htmlspecialchars($pourcentage) ?>/100 XP</div>
         </div>
         <div class="progress-wrapper">
-            <div class="progress-fill" style="width: <?= htmlspecialchars($pourcentage) ?>%;"></div>
+            <div class="progress-fill" style="width: <?= $pourcentage ?>%;"></div>
         </div>
     </section>
 
@@ -71,9 +89,9 @@ $pourcentage = ($user['xp'] % 100);
         <a href="profilesuccess.php" class="tab">Succès</a>
     </section>
 
-    <section class="avatar-display">
+    <section class="avatar-display" style="text-align: center;">
         <div class="character">
-            <img src="./images/guy2 1.png" alt="Personnage en entier">
+            <img src="<?= $user['avatar_img'] ?? './images/perso.svg' ?>" alt="Personnage" style="max-height: 250px;">
         </div>
     </section>
 

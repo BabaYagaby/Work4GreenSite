@@ -127,7 +127,7 @@ if ($niveau_calcule >= 15) {
         <a href="profile.php">Profil</a>
         <a href="company.php">Entreprise</a>
         <a href="quests.php">Quêtes</a>
-        <a href="settings.php">Paramètres</a>
+        <a href="options.php">Paramètres</a>
     </footer>
 
 </body>

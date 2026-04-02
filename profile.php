@@ -36,11 +36,11 @@ $pourcentage = ($user['xp'] % 100);
 </head>
 <body>
     
-<main class="app-container flex-col gap-lg">
+<main class="app-container flex-col gap-md">
 
-    <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--neutral); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--main); box-shadow: none;">
         <div class="avatar big">
-            <img src="./images/guy2 1.png" alt="Avatar">
+            <img src="./Images/perso-03.svg" alt="Avatar">
         </div>
 
         <div class="flex-col items-center">
@@ -49,8 +49,8 @@ $pourcentage = ($user['xp'] % 100);
 
             <div class="badges mt-md">
                 <img src="./Images/Badge-1.png" alt="Badge">
-                <img src="" alt="">
-                <img src="" alt="">
+                <img src="./Images/Badge-2.png" alt="Badge">
+                <img src="./Images/Badge-3.png" alt="Badge">
             </div>
         </div>
     </section>
@@ -73,7 +73,7 @@ $pourcentage = ($user['xp'] % 100);
 
     <section class="avatar-display">
         <div class="character">
-            <img src="./images/guy2 1.png" alt="Personnage en entier">
+            <img src="./Images/perso-03.svg" alt="Personnage en entier">
         </div>
     </section>
 

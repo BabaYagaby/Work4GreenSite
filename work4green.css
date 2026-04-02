@@ -80,6 +80,13 @@ a {
    4. COMPOSANTS (Visuel des éléments)
 ======================================== */
 .card {
+    background: var(--third);
+    border-radius: var(--radius-box);
+    padding: var(--space-md);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card-dark {
     background: var(--secondary);
     border-radius: var(--radius-box);
     padding: var(--space-md);
@@ -87,7 +94,7 @@ a {
 }
 
 .text-title { font-size: 1.25rem; font-weight: bold; color: var(--dark); }
-.text-title-lvl { font-size: 1.25rem; font-weight: bold; color: var(--fourth); }
+.text-title-lvl { font-size: 1.25rem; font-weight: bold; color: var(--secondary); }
 .text-subtitle { font-size: 1rem; font-weight: 600; color: var(--light); }
 .text-body { font-size: 0.9rem; color: var(--neutral); }
 .text-small { font-size: 0.8rem; opacity: 0.8; }
@@ -127,7 +134,7 @@ a {
 
 .progress-fill {
     height: 100%;
-    background: var(--fourth);
+    background: var(--secondary);
     border-radius: 999px;
     transition: width 0.3s ease;
 }
@@ -185,16 +192,16 @@ a {
 /* Avatar */
 .avatar {
     border-radius: 50%;
-    background: var(--third);
+    background: var(--main);
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 3px solid var(--main);
+    border: 3px solid var(--third);
 }
 .avatar.big {
-    width: 80px;
-    height: 80px;
+    width: 8rem;
+    height: 8rem;
     flex-shrink: 0;
 }
 .avatar img {
@@ -213,10 +220,10 @@ a {
     border-radius: 20px;
 }
 .badges img {
-    width: 20px;
-    height: 20px;
+    width: 2rem;
+    height: 2rem;
     /* Placeholder visuel si le src="" est vide */
-    background: rgba(255,255,255,0.4);
+    background: rgba(255, 255, 255, 0.4);
     border-radius: 50%;
     min-width: 20px;
     min-height: 20px;
@@ -245,7 +252,7 @@ a {
 
 /* Scène Avatar */
 .avatar-display {
-    background: rgba(183, 174, 152, 0.2); /* var(--input) transparent */
+    background: rgba(51, 76, 54, 0.704); /* var(--input) transparent */
     border-radius: var(--radius-box);
     padding: var(--space-lg);
     display: flex;
@@ -255,7 +262,7 @@ a {
     box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
 }
 .character {
-    width: 160px;
+    width: 80%;
     max-width: 100%;
 }
 .character img {

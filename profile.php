@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 1. LA REQUÊTE (On récupère bien l'image de l'avatar avec le JOIN)
+// 1. LA REQUÊTE COMPLÈTE (On récupère tout, y compris l'avatar et les badges)
 $req = $bdd->prepare("
     SELECT u.*, c.companyname, 
            av.image_path as avatar_img,
@@ -27,19 +27,22 @@ $req = $bdd->prepare("
 $req->execute([$user_id]);
 $user = $req->fetch(PDO::FETCH_ASSOC);
 
-if (!$user) { die("Utilisateur introuvable."); }
+if (!$user) { 
+    die("Utilisateur introuvable."); 
+}
 
 // 2. LA VARIABLE UNIQUE POUR L'IMAGE
 // Si avatar_img est vide en BDD, on met le perso par défaut
-$ma_photo_avatar = (!empty($user['avatar_img'])) ? trim($user['avatar_img']) : './Images/perso.svg';
+$ma_photo_avatar = (!empty($user['avatar_img'])) ? trim($user['avatar_img']) : './Images/perso-03.svg';
 
+// 3. CALCUL DE L'XP
 $pourcentage = ($user['xp'] % 100);
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil - Work4Green</title>
     <link rel="stylesheet" href="work4green.css">
 </head>
@@ -47,63 +50,60 @@ $pourcentage = ($user['xp'] % 100);
     
 <main class="app-container flex-col gap-md">
 
-    <div class="badges-row" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-        <?php for($i=1; $i<=3; $i++): ?>
-            <div class="badge-slot" style="width: 45px; height: 45px; background: rgba(0,0,0,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc;">
-                <?php if(!empty($user['badge_'.$i])): ?>
-                    <img src="<?= $user['badge_'.$i] ?>" style="width: 35px;">
-                <?php endif; ?>
-            </div>
-        <?php endfor; ?>
-    </div>
-
-    <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--main); border-radius: 20px; padding: 15px;">
-        <div class="avatar-circle" style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; background: white;">
-            <img src="<?= $ma_photo_avatar ?>" style="width: 100%; height: 100%; object-fit: cover;">
+    <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--main); box-shadow: none;">
+        <div class="avatar big">
+            <img src="<?= htmlspecialchars($ma_photo_avatar) ?>" alt="Avatar">
         </div>
-        <div class="info">
-            <div style="font-weight: bold; font-size: 1.2rem;"><?= htmlspecialchars($user['firstname']) ?></div>
-            <div style="font-size: 0.9rem; opacity: 0.8;"><?= htmlspecialchars($user['companyname'] ?? 'Indépendant') ?></div>
+
+        <div class="flex-col items-center">
+            <div class="text-title"><?= htmlspecialchars($user['firstname'] . ' ' . $user['lastname']) ?></div>
+            <div class="text-subtitle text-third"><?= htmlspecialchars($user['companyname'] ?? 'Indépendant') ?></div>
+
+            <div class="badges mt-md">
+                <?php for($i=1; $i<=3; $i++): ?>
+                    <?php if(!empty($user['badge_'.$i])): ?>
+                        <img src="<?= htmlspecialchars($user['badge_'.$i]) ?>" alt="Badge <?= $i ?>">
+                    <?php endif; ?>
+                <?php endfor; ?>
+            </div>
         </div>
     </section>
 
     <section class="card flex-col gap-sm">
-        <div class="d-flex justify-between">
-            <span>Niveau <?= $user['level'] ?></span>
-            <span><?= $pourcentage ?>/100 XP</span>
+        <div class="d-flex justify-between items-center">
+            <div class="text-title-lvl">Niveau <?= htmlspecialchars($user['level']) ?></div>
+            <div class="text-subtitle"><?= htmlspecialchars($pourcentage) ?>/100 XP</div>
         </div>
-        <div style="background: #eee; height: 10px; border-radius: 5px; overflow: hidden;">
-            <div style="width: <?= $pourcentage ?>%; background: var(--secondary); height: 100%;"></div>
+        <div class="progress-wrapper">
+            <div class="progress-fill" style="width: <?= htmlspecialchars($pourcentage) ?>%;"></div>
         </div>
     </section>
 
-    <nav class="tabs" style="display: flex; justify-content: space-around; border-bottom: 1px solid #eee;">
-        <a href="#" class="active" style="padding: 10px; border-bottom: 3px solid var(--secondary); text-decoration: none; color: black; font-weight: bold;">Avatar</a>
-        <a href="profilestat.php" style="padding: 10px; text-decoration: none; color: #888;">Stats</a>
-        <a href="profilesuccess.php" style="padding: 10px; text-decoration: none; color: #888;">Succès</a>
-    </nav>
-
-    <section class="avatar-display" style="text-align: center; padding: 40px 0; width: 100%; display: flex; justify-content: center; align-items: center;">
-    <div class="character-preview" style="width: 100%; max-width: 300px;">
-        <img src="<?= $ma_photo_avatar ?>" 
-             alt="Grand personnage" 
-             style="display: block; margin: 0 auto; width: auto; height: auto; max-height: 280px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); position: relative; z-index: 10;">
-    </div>
+    <section class="tabs">
+        <a href="profile.php" class="tab active">Avatar</a>
+        <a href="profilestat.php" class="tab">Stats</a>
+        <a href="profilesuccess.php" class="tab">Succès</a>
     </section>
 
-    <section class="d-flex gap-md" style="padding: 0 10px;">
-        <a href="profilecustom.php" class="btn-outline flex-1" style="text-align:center; padding:10px; border:1px solid #ccc; border-radius:10px; text-decoration:none; color:black;">Modifier</a>
-        <a href="profileinventory.php" class="btn-primary flex-1" style="text-align:center; padding:10px; background:var(--main); border-radius:10px; text-decoration:none; color:black; font-weight:bold;">Inventaire</a>
+    <section class="avatar-display">
+        <div class="character">
+            <img src="<?= htmlspecialchars($ma_photo_avatar) ?>" alt="Personnage en entier">
+        </div>
+    </section>
+
+    <section class="d-flex gap-md">
+        <a href="profilecustom.php" class="btn btn-outline flex-1">Modifier</a>
+        <a href="profileinventory.php" class="btn btn-primary flex-1">Inventaire</a>
     </section>
 
 </main>
 
-<nav class="navbar" style="position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #eee; padding: 10px 0;">
-    <div style="display: flex; justify-content: space-around;">
-        <a href="profile.php"><img src="./Images/profile-1341-svgrepo-com.svg" width="25"></a>
-        <a href="quests.php"><img src="./Images/notebook-svgrepo-com.svg" width="25"></a>
-        <a href="company.php"><img src="./Images/leaf-eco-svgrepo-com.svg" width="25"></a>
-        <a href="options.php"><img src="./Images/gear-svgrepo-com.svg" width="25"></a>
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="nav-icon" href="profile.php"><img src="./Images/profile-1341-svgrepo-com.svg" alt="Profil"></a>
+        <a class="nav-icon" href="quests.php"><img src="./Images/notebook-svgrepo-com.svg" alt="Quetes"></a>
+        <a class="nav-icon" href="company.php"><img src="./Images/leaf-eco-svgrepo-com.svg" alt="W4G"></a>
+        <a class="nav-icon" href="options.php"><img src="./Images/gear-svgrepo-com.svg" alt="Options"></a>
     </div>
 </nav>
 

@@ -2,6 +2,7 @@
 session_start();
 include('config.php');
 
+// 1. Vérification de la session
 if (!isset($_SESSION['user_id'])) {
     header("Location: connection.php");
     exit();
@@ -9,24 +10,41 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 1. Récupération des données utilisateur (inchangé)
-$reqUser = $bdd->prepare("
-    SELECT u.firstname, u.lastname, u.level, u.xp, c.companyname 
+// 2. RÉCUPÉRATION COMPLÈTE DU PROFIL (Infos, Entreprise, Avatar, Badges)
+$req = $bdd->prepare("
+    SELECT u.*, c.companyname, 
+           av.image_path as avatar_img,
+           b1.image_path as badge_1,
+           b2.image_path as badge_2,
+           b3.image_path as badge_3
     FROM users u 
     LEFT JOIN company c ON u.company_id = c.id 
+    LEFT JOIN items_catalog av ON u.current_avatar_id = av.id
+    LEFT JOIN items_catalog b1 ON u.fav_badge_1 = b1.id
+    LEFT JOIN items_catalog b2 ON u.fav_badge_2 = b2.id
+    LEFT JOIN items_catalog b3 ON u.fav_badge_3 = b3.id
     WHERE u.id = ?
 ");
-$reqUser->execute([$user_id]);
-$user = $reqUser->fetch(PDO::FETCH_ASSOC);
+$req->execute([$user_id]);
+$user = $req->fetch(PDO::FETCH_ASSOC);
 
-// 2. Calcul du nombre de quêtes terminées pour les succès
+if (!$user) { 
+    die("Utilisateur introuvable."); 
+}
+
+// 3. LOGIQUE DES QUÊTES ET PROGRESSION
+// On compte le nombre total de quêtes terminées
 $stmt = $bdd->prepare("SELECT COUNT(*) FROM user_quests WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $totalQuests = $stmt->fetchColumn();
 
+// Calcul de la barre de progression (XP actuelle vs palier de 100)
 $pourcentage = ($user['xp'] % 100);
 
-// Définition des succès (Demo)
+// Gestion de l'avatar (image par défaut si vide)
+$ma_photo_avatar = (!empty($user['avatar_img'])) ? trim($user['avatar_img']) : './Images/perso-03.svg';
+
+// 4. DÉFINITION DES SUCCÈS (Achievements)
 $achievements = [
     ['id' => 1, 'name' => 'Bienvenue !', 'desc' => 'Avoir créé son compte.', 'req' => 0, 'type' => 'count', 'icon' => '🎉'],
     ['id' => 2, 'name' => 'Écolo en herbe', 'desc' => 'Terminer 5 quêtes.', 'req' => 5, 'type' => 'count', 'icon' => '🌱'],
@@ -49,15 +67,19 @@ $achievements = [
 
     <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--main); box-shadow: none;">
         <div class="avatar big">
-            <img src="./Images/perso-03.svg" alt="Avatar">
+            <img src="<?= htmlspecialchars($ma_photo_avatar) ?>" alt="Avatar">
         </div>
+
         <div class="flex-col items-center">
             <div class="text-title"><?= htmlspecialchars($user['firstname'] . ' ' . $user['lastname']) ?></div>
-            <div class="text-subtitle text-third"><?= htmlspecialchars($user['companyname'] ?? 'Aucune entreprise') ?></div>
+            <div class="text-subtitle text-third"><?= htmlspecialchars($user['companyname'] ?? 'Indépendant') ?></div>
+
             <div class="badges mt-md">
-                <img src="./Images/Badge-1.png" alt="Badge">
-                <img src="./Images/Badge-2.png" alt="Badge">
-                <img src="./Images/Badge-3.png" alt="Badge">
+                <?php for($i=1; $i<=3; $i++): ?>
+                    <?php if(!empty($user['badge_'.$i])): ?>
+                        <img src="<?= htmlspecialchars($user['badge_'.$i]) ?>" alt="Badge <?= $i ?>">
+                    <?php endif; ?>
+                <?php endfor; ?>
             </div>
         </div>
     </section>

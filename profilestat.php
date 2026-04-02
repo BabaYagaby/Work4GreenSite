@@ -2,6 +2,7 @@
 session_start();
 include('config.php');
 
+// 1. Vérification de la session
 if (!isset($_SESSION['user_id'])) {
     header("Location: connection.php");
     exit();
@@ -9,20 +10,35 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 1. Récupération des infos utilisateur basiques (inchangé)
-$reqUser = $bdd->prepare("
-    SELECT u.firstname, u.lastname, u.level, u.xp, c.companyname 
+// 2. Récupération du profil complet (Infos de base + Entreprise + Avatar + Badges)
+// On utilise la version du deuxième bloc qui est plus exhaustive
+$req = $bdd->prepare("
+    SELECT u.*, c.companyname, 
+           av.image_path as avatar_img,
+           b1.image_path as badge_1,
+           b2.image_path as badge_2,
+           b3.image_path as badge_3
     FROM users u 
     LEFT JOIN company c ON u.company_id = c.id 
+    LEFT JOIN items_catalog av ON u.current_avatar_id = av.id
+    LEFT JOIN items_catalog b1 ON u.fav_badge_1 = b1.id
+    LEFT JOIN items_catalog b2 ON u.fav_badge_2 = b2.id
+    LEFT JOIN items_catalog b3 ON u.fav_badge_3 = b3.id
     WHERE u.id = ?
 ");
-$reqUser->execute([$user_id]);
-$user = $reqUser->fetch(PDO::FETCH_ASSOC);
+$req->execute([$user_id]);
+$user = $req->fetch(PDO::FETCH_ASSOC);
 
+if (!$user) { 
+    die("Utilisateur introuvable."); 
+}
+
+// 3. Gestion de l'avatar par défaut et calcul de progression
+$ma_photo_avatar = (!empty($user['avatar_img'])) ? trim($user['avatar_img']) : './Images/perso-03.svg';
 $pourcentage = ($user['xp'] % 100);
 
 // ==========================================
-// 2. LOGIQUE DU GRAPHIQUE (NOUVEAU)
+// 4. LOGIQUE DU GRAPHIQUE (Activité sur 14 jours)
 // ==========================================
 
 // Initialisation des tableaux pour les 7 jours (0 = Lundi, 6 = Dimanche)
@@ -32,7 +48,7 @@ $xp_derniere = array_fill(0, 7, 0);
 $total_taches = 0;
 $total_points_gagnes = 0;
 
-// On récupère toutes les quêtes complétées par l'utilisateur avec leur XP
+// Récupération des quêtes complétées
 $reqStats = $bdd->prepare("
     SELECT uq.date_completion, q.quest_xp 
     FROM user_quests uq
@@ -43,29 +59,29 @@ $reqStats = $bdd->prepare("
 $reqStats->execute([$user_id]);
 $historique = $reqStats->fetchAll(PDO::FETCH_ASSOC);
 
-// On trie les résultats dans la semaine actuelle ou la précédente
+// Dates pivots pour le tri
 $debut_semaine_actuelle = strtotime('monday this week');
 $debut_semaine_derniere = strtotime('monday last week');
 
 foreach ($historique as $row) {
     $date_timestamp = strtotime($row['date_completion']);
-    // 'N' donne le jour de 1 (Lundi) à 7 (Dimanche). On fait -1 pour l'index du tableau (0 à 6)
+    // Index 0 à 6 pour Lundi à Dimanche
     $jour_index = date('N', $date_timestamp) - 1; 
 
     if ($date_timestamp >= $debut_semaine_actuelle) {
-        // Semaine actuelle
+        // Semaine en cours
         $xp_actuelle[$jour_index] += $row['quest_xp'];
         $total_taches++;
         $total_points_gagnes += $row['quest_xp'];
     } elseif ($date_timestamp >= $debut_semaine_derniere && $date_timestamp < $debut_semaine_actuelle) {
-        // Semaine dernière
+        // Semaine précédente
         $xp_derniere[$jour_index] += $row['quest_xp'];
     }
 }
 
-// Pour le CSS, il nous faut un point de référence maximum pour que la plus grande barre fasse 100% de hauteur
+// Calcul du maximum pour l'échelle visuelle du graphique
 $max_xp = max(max($xp_actuelle), max($xp_derniere));
-if ($max_xp == 0) $max_xp = 1; // Éviter la division par zéro si l'utilisateur n'a rien fait
+if ($max_xp == 0) $max_xp = 1; 
 ?>
 
 <!DOCTYPE html>
@@ -82,15 +98,19 @@ if ($max_xp == 0) $max_xp = 1; // Éviter la division par zéro si l'utilisateur
 
     <section class="card d-flex items-center justify-evenly gap-md" style="background: var(--main); box-shadow: none;">
         <div class="avatar big">
-            <img src="./Images/perso-03.svg" alt="Avatar">
+            <img src="<?= htmlspecialchars($ma_photo_avatar) ?>" alt="Avatar">
         </div>
+
         <div class="flex-col items-center">
             <div class="text-title"><?= htmlspecialchars($user['firstname'] . ' ' . $user['lastname']) ?></div>
-            <div class="text-subtitle text-third"><?= htmlspecialchars($user['companyname'] ?? 'Aucune entreprise') ?></div>
+            <div class="text-subtitle text-third"><?= htmlspecialchars($user['companyname'] ?? 'Indépendant') ?></div>
+
             <div class="badges mt-md">
-                <img src="./Images/Badge-1.png" alt="Badge">
-                <img src="./Images/Badge-2.png" alt="Badge">
-                <img src="./Images/Badge-3.png" alt="Badge">
+                <?php for($i=1; $i<=3; $i++): ?>
+                    <?php if(!empty($user['badge_'.$i])): ?>
+                        <img src="<?= htmlspecialchars($user['badge_'.$i]) ?>" alt="Badge <?= $i ?>">
+                    <?php endif; ?>
+                <?php endfor; ?>
             </div>
         </div>
     </section>

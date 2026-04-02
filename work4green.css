@@ -122,7 +122,7 @@ a {
 
 .btn-primary { background: var(--dark); color: var(--neutral); }
 .btn-outline { background: transparent; border: 2px solid var(--dark); color: var(--dark); }
-.btn-danger { background: var(--fourth); color: var(--black); }
+.btn-danger { background: var(--neutral); color: var(--black); }
 .btn-success { background: var(--third); color: var(--neutral); pointer-events: none; }
 
 .progress-wrapper {
@@ -514,9 +514,9 @@ a {
 }
 
 .btn-logout {
-    background: #ffeded;
-    color: #e53e3e;
-    border: 1px solid #fed7d7;
+    background: #ffffff;
+    color: var(--secondary);
+    border: 1px solid #000000;
     font-weight: bold;
     padding: 14px;
     border-radius: 12px;

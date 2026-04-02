@@ -41,14 +41,14 @@ $is_manager = ($user['verified'] == 1);
                     <div style="font-size: 1.2rem;">👤</div>
                     <div class="text-dark" style="font-weight: 600;"><?= htmlspecialchars($user['firstname'] . ' ' . $user['lastname']) ?></div>
                 </div>
-                <a href="profile.php" class="text-third" style="font-size: 0.8rem; font-weight: bold;">Modifier</a>
+                <a href="" class="text-third" style="font-size: 0.8rem; font-weight: bold;">Modifier</a>
             </div>
             <div class="d-flex justify-between items-center">
                 <div class="d-flex items-center gap-sm">
                     <div style="font-size: 1.2rem;">🔒</div>
                     <div class="text-dark" style="font-weight: 600;">Mot de passe</div>
                 </div>
-                <a href="#" class="text-third" style="font-size: 0.8rem; font-weight: bold;">Changer</a>
+                <a href="" class="text-third" style="font-size: 0.8rem; font-weight: bold;">Changer</a>
             </div>
         </div>
     </section>
@@ -60,7 +60,7 @@ $is_manager = ($user['verified'] == 1);
             <div class="flex-col gap-sm">
                 <div class="text-white" style="font-weight: bold;">Gestion d'équipe</div>
                 <p class="text-white" style="font-size: 0.8rem; opacity: 0.8;">En tant que gérant, vous pouvez ajouter de nouveaux employés à votre entreprise.</p>
-                <a href="sendinvitation.php" class="btn btn-primary" style="background: var(--main); color: var(--dark); margin-top: 10px;">
+                <a href="sendinvitation.php" class="btn btn-primary" style="background: var(--neutral); color: var(--dark); margin-top: 10px;">
                     ✉️ Inviter des employés
                 </a>
             </div>
@@ -89,10 +89,9 @@ $is_manager = ($user['verified'] == 1);
     </section>
 
     <section class="mt-md">
-        <a href="logout.php" class="btn btn-danger" style="background: #ffeded; color: #e53e3e; border: 1px solid #fed7d7;">
+        <a href="logout.php" class="btn btn-logout">
             Se déconnecter
         </a>
-        <div class="text-small" style="text-align: center; margin-top: 20px; opacity: 0.5;">Work4Green v1.0.4 - Demo Version</div>
     </section>
 
 </main>

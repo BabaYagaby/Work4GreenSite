@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 02 avr. 2026 à 20:37
+-- Généré le : jeu. 02 avr. 2026 à 23:38
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -39,7 +39,9 @@ CREATE TABLE `company` (
 --
 
 INSERT INTO `company` (`id`, `companyname`, `xp`, `level`) VALUES
-(1, 'The Dill Dough Company', 530, 0);
+(1, 'Eco-Tech Solutions', 2750, 6),
+(2, 'Green Horizon', 5800, 12),
+(3, 'Petit Potager SARL', 150, 1);
 
 -- --------------------------------------------------------
 
@@ -128,12 +130,15 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `lastname`, `firstname`, `email`, `password`, `verified`, `xp`, `level`, `invitation_status`, `company_id`, `current_avatar_id`, `fav_badge_1`, `fav_badge_2`, `fav_badge_3`) VALUES
-(1, 'Beaurain', 'Tom', 'tom.beaurain@gmail.com', '$2y$10$yefjP7TWHUFVRflQyx/ua.h/M15DpyIbjh6O2kWpJmjS3tX0HDKm2', 0, 220, 2, 2, 1, 3, 9, NULL, 8),
-(2, 'Gardes', 'Gabriel', 'gabrielchaprongardes@gmail.com', '$2y$10$4hTP7g0Pc/.0ik/jgZCRQevPUlVGrqu1bSQBhuzDDaLSKQ0k7UWJ6', 1, 310, 3, 0, 1, 1, 8, 14, 11),
-(3, 'Coutelier', 'Enzo', 'enzo.coutelier@gmail.com', '$2y$10$lBoiKzEnMS/E3i16wjvrJukCLtQf8BS7RlvvHQlPt4dHZ9d7cyX4O', 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL),
-(6, 'yo', 'yoyo', 'yo@gyo.yo', '$2y$10$kMDPffX66tDWL0E8gs8CheC9Yjb/sm.iwi.pngfQoBWAuXQ06RaAm', 0, 0, 0, 0, 0, 3, NULL, NULL, NULL),
-(7, 'lala', 'lala', 'lala@lala', '$2y$10$r0t0UvUt6Dqn5QOb0Dk14.Jo5vqYu8hUVq/DP9AwSaM4B9vJZ7BeW', 0, 0, 0, 0, 0, 3, NULL, NULL, NULL),
-(8, 'qqGERZGRE', 'ZERGQG', 'GQRZEG@G', '$2y$10$8rUJ1rfX/.OiEm2evI3TXuxAW4T5eeXth1ihm0f6jc0mhJivDvxx2', 0, 0, 0, 0, 0, 3, NULL, NULL, NULL);
+(1, 'Dupont', 'Marc', 'marc.dupont@ecotech.fr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, 450, 5, 0, 1, 1, NULL, NULL, NULL),
+(2, 'Lemoine', 'Sophie', 's.lemoine@greenh.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, 890, 10, 0, 2, 6, NULL, NULL, NULL),
+(3, 'Rivière', 'Jean', 'jean@potager.fr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, 120, 2, 0, 3, 3, NULL, NULL, NULL),
+(4, 'Martin', 'Lucas', 'l.martin@ecotech.fr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 230, 3, 1, 1, 2, NULL, NULL, NULL),
+(5, 'Bernard', 'Emma', 'e.bernard@ecotech.fr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 150, 2, 1, 1, 3, NULL, NULL, NULL),
+(6, 'Petit', 'Chloé', 'c.petit@greenh.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 600, 7, 1, 2, 5, NULL, NULL, NULL),
+(7, 'Garnier', 'Thomas', 't.garnier@mail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 50, 1, 0, 0, 3, NULL, NULL, NULL),
+(8, 'Faure', 'Julie', 'j.faure@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 10, 0, 0, 0, 2, NULL, NULL, NULL),
+(9, 'Rousseau', 'Antoine', 'a.rousseau@outlook.fr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 0, 0, 0, 0, 0, 1, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -152,30 +157,21 @@ CREATE TABLE `user_inventory` (
 --
 
 INSERT INTO `user_inventory` (`user_id`, `item_id`, `obtained_at`) VALUES
-(1, 1, '2026-04-02 20:21:22'),
-(1, 2, '2026-04-02 20:21:14'),
-(1, 3, '2026-04-02 20:21:14'),
-(1, 8, '2026-04-02 20:21:14'),
-(1, 9, '2026-04-02 20:21:22'),
-(2, 1, '2026-04-02 18:31:21'),
-(2, 2, '2026-04-02 18:38:28'),
-(2, 3, '2026-04-02 18:45:55'),
-(2, 4, '2026-04-02 18:45:55'),
-(2, 5, '2026-04-02 18:45:55'),
-(2, 6, '2026-04-02 18:45:55'),
-(2, 7, '2026-04-02 18:45:55'),
-(2, 8, '2026-04-02 18:45:55'),
-(2, 9, '2026-04-02 18:45:55'),
-(2, 10, '2026-04-02 18:45:55'),
-(2, 11, '2026-04-02 18:52:43'),
-(2, 12, '2026-04-02 18:52:43'),
-(2, 13, '2026-04-02 18:52:43'),
-(2, 14, '2026-04-02 18:52:43'),
-(2, 15, '2026-04-02 18:52:43'),
-(5, 3, '2026-04-02 19:01:59'),
-(6, 3, '2026-04-02 19:02:57'),
-(7, 3, '2026-04-02 19:05:27'),
-(8, 3, '2026-04-02 19:06:54');
+(1, 1, '2026-04-02 23:36:09'),
+(1, 3, '2026-04-02 23:36:09'),
+(2, 3, '2026-04-02 23:36:09'),
+(2, 6, '2026-04-02 23:36:09'),
+(3, 3, '2026-04-02 23:36:09'),
+(4, 2, '2026-04-02 23:36:09'),
+(4, 3, '2026-04-02 23:36:09'),
+(5, 3, '2026-04-02 23:36:09'),
+(6, 3, '2026-04-02 23:36:09'),
+(6, 5, '2026-04-02 23:36:09'),
+(7, 3, '2026-04-02 23:36:09'),
+(8, 2, '2026-04-02 23:36:09'),
+(8, 3, '2026-04-02 23:36:09'),
+(9, 1, '2026-04-02 23:36:09'),
+(9, 3, '2026-04-02 23:36:09');
 
 -- --------------------------------------------------------
 
@@ -189,22 +185,6 @@ CREATE TABLE `user_quests` (
   `quest_id` int(11) NOT NULL,
   `date_completion` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Déchargement des données de la table `user_quests`
---
-
-INSERT INTO `user_quests` (`id`, `user_id`, `quest_id`, `date_completion`) VALUES
-(22, 1, 1, '2026-04-02'),
-(23, 1, 3, '2026-04-02'),
-(24, 1, 4, '2026-04-02'),
-(25, 1, 5, '2026-04-02'),
-(14, 2, 1, '2026-04-01'),
-(17, 2, 1, '2026-04-02'),
-(15, 2, 2, '2026-04-01'),
-(18, 2, 3, '2026-04-02'),
-(19, 2, 4, '2026-04-02'),
-(21, 2, 5, '2026-04-02');
 
 --
 -- Index pour les tables déchargées
@@ -255,7 +235,7 @@ ALTER TABLE `user_quests`
 -- AUTO_INCREMENT pour la table `company`
 --
 ALTER TABLE `company`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `items_catalog`
@@ -273,13 +253,13 @@ ALTER TABLE `quest`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT pour la table `user_quests`
 --
 ALTER TABLE `user_quests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

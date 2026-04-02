@@ -1,6 +1,6 @@
 <?php
 session_start();
-// include('config.php'); // À décommenter dans ton environnement de production
+include('config.php'); 
 
 // --- CONNEXION BDD ---
 $host = '127.0.0.1';

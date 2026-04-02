@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$aujourdhui = date('Y-m-d'); // Format 2026-04-01
+$aujourdhui = date('Y-m-d');
 
 // 1. SÉLECTION DES QUÊTES DU JOUR (Change à minuit)
 // On utilise la date comme "Seed" pour que mt_srand génère les mêmes IDs toute la journée

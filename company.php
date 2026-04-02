@@ -39,6 +39,18 @@ $xp_par_niveau = 500;
 $niveau_calcule = floor($xp_entreprise / $xp_par_niveau);
 $progression = $xp_entreprise % $xp_par_niveau;
 $pourcentage = ($progression / $xp_par_niveau) * 100;
+$image_arbre = "arbre_petit.png"; // Par défaut
+
+if ($niveau_calcule >= 15) {
+    $image_arbre = "foret.png"; // Optionnel : si tu veux un stade encore après
+} elseif ($niveau_calcule >= 10) {
+    $image_arbre = "arbre3.png";
+} elseif ($niveau_calcule >= 5) {
+    $image_arbre = "arbre2.png";
+} else {
+    $image_arbre = "arbre1.png";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -92,6 +104,23 @@ $pourcentage = ($progression / $xp_par_niveau) * 100;
                 <?php $rank++; endforeach; ?>
             </tbody>
         </table>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h1>🌍 Notre Entreprise</h1>
+        
+        <div class="tree-container">
+            <img src="images/<?= $image_arbre ?>" alt="Évolution de l'entreprise" style="width: 150px; height: auto; margin-bottom: 10px;">
+        </div>
+
+        <div style="font-size: 1.2em; font-weight: bold; color: #27ae60;">
+            Niveau <?= $niveau_calcule ?>
+        </div>
+        
+        <div class="progress-bg">
+            <div class="progress-fill" style="width: <?= $pourcentage ?>%;"></div>
+        </div>
+        <p style="margin:0;"><?= $progression ?> / <?= $xp_par_niveau ?> XP avant le prochain niveau</p>
     </div>
 
     <footer class="boutons">
